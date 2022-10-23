@@ -3,17 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "Ant.generated.h"
 
 UCLASS()
-class ANTSIM_API AAnt : public APawn
+class ANTSIM_API AAnt : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
 	AAnt();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class AFood* Food;
 
 protected:
 	// Called when the game starts or when spawned
