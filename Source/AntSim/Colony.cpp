@@ -3,7 +3,9 @@
 
 #include "Colony.h"
 
+#include "AIControllerAnt.h"
 #include "Ant.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -23,6 +25,11 @@ AColony::AColony()
 void AColony::BeginPlay()
 {
 	Super::BeginPlay();
+
+	for (auto Ant : AntArray)
+	{
+		Cast<AAIControllerAnt>(Ant->GetController())->GetBlackboardComponent()->SetValueAsVector("ColonyLocation", GetActorLocation());
+	}
 }
 
 // Called every frame

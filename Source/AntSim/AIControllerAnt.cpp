@@ -49,5 +49,6 @@ void AAIControllerAnt::HandleSeenFood(AActor* Actor)
 		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Orange, TEXT("Food"));
 
 		Blackboard->SetValueAsVector("FoodLocation", Food->GetActorLocation());
+		Blackboard->SetValueAsObject("FoodObject", Food);
 	}
 }

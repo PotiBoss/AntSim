@@ -18,6 +18,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class AFood* Food;
 
+	UPROPERTY(Category=Character, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	USceneComponent* FoodSocketComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

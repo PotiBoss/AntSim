@@ -25,7 +25,7 @@ public:
 	UBoxComponent* TriggerBox;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
-	TArray<TWeakObjectPtr<AAnt>> AntArray;
+	TArray<AAnt*> AntArray;
 
 protected:
 	// Called when the game starts or when spawned
