@@ -5,6 +5,7 @@
 
 #include "AIControllerAnt.h"
 #include "Ant.h"
+#include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -26,9 +27,21 @@ void AColony::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (auto Ant : AntArray)
+	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
+
+	for(uint16 i = 0; i < AntsToSpawn; i++)
 	{
-		Cast<AAIControllerAnt>(Ant->GetController())->GetBlackboardComponent()->SetValueAsVector("ColonyLocation", GetActorLocation());
+		FActorSpawnParameters SpawnParams;
+		
+		FNavLocation NavLocation;
+		
+		NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 300.0f, NavLocation);
+
+		float RandomRotationYaw = FMath::RandRange(0, 360);
+
+		FRotator SpawnRotation = FRotator(0.0f, RandomRotationYaw,0.0f);
+		
+		AntArray.Add(GetWorld()->SpawnActor<AAnt>(AntClass, NavLocation.Location, SpawnRotation, SpawnParams));
 	}
 }
 

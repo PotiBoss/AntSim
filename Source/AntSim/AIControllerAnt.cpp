@@ -3,6 +3,7 @@
 
 #include "AIControllerAnt.h"
 
+#include "Colony.h"
 #include "Food.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -14,8 +15,6 @@ AAIControllerAnt::AAIControllerAnt()
 	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("Behavior Tree Component"));
 	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("Blackboard Component"));
 }
-
-
 
 void AAIControllerAnt::OnPossess(APawn* InPawn)
 {
@@ -41,14 +40,24 @@ void AAIControllerAnt::BeginPlay()
 }
 void AAIControllerAnt::HandleSeenFood(AActor* Actor)
 {
-	if(Food) {return;}
+	if(Colony) { return; }
+	
+	if(Food)
+	{
+		Colony = Cast<AColony>(Actor);
+		if(Colony)
+		{
+			Blackboard->SetValueAsVector("ColonyLocation", Colony->GetActorLocation());
+			Blackboard->SetValueAsObject("Colony", Colony);
+		}
+		return;
+	}
+	
 	Food = Cast<AFood>(Actor);
 
 	if(Food)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 4.0f, FColor::Orange, TEXT("Food"));
-
 		Blackboard->SetValueAsVector("FoodLocation", Food->GetActorLocation());
-		Blackboard->SetValueAsObject("FoodObject", Food);
+		Blackboard->SetValueAsObject("FoodSource", Food);
 	}
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TextRenderComponent.h"
 #include "GameFramework/Actor.h"
 #include "Food.generated.h"
 
@@ -22,6 +23,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "C++")
 	UAIPerceptionStimuliSourceComponent* StimuliSourceComponent;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	TSubclassOf<class AFoodAnt> FoodClass;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	UTextRenderComponent* TextRender;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	uint8 FoodAmount;
+
 
 protected:
 	// Called when the game starts or when spawned

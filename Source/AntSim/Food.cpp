@@ -14,6 +14,14 @@ AFood::AFood()
 	StimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>("StimuliSourceComponent");
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+
+	SetRootComponent(Mesh);
+
+	TextRender = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderer"));
+
+	TextRender->SetupAttachment(Mesh);
+
+	FoodAmount = 11;
 }
 
 // Called when the game starts or when spawned

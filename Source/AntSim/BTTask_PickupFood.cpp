@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "Ant.h"
 #include "Food.h"
+#include "FoodAnt.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_PickupFood::UBTTask_PickupFood()
@@ -22,11 +23,19 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	AAnt* Ant = Cast<AAnt>(AIController->GetPawn());
 
-	AFood* Food = Cast<AFood>(AIController->GetBlackboardComponent()->GetValueAsObject("FoodObject"));
+	Ant->bHasFood = true;
 
-	AIController->GetBlackboardComponent()->SetValueAsBool("HasFood", true);
+	AFood* Food = Cast<AFood>(AIController->GetBlackboardComponent()->GetValueAsObject("FoodSource"));
 
-	Food->AttachToComponent(Ant->FoodSocketComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	FActorSpawnParameters SpawnParams;
+	
+	AFoodAnt* FoodAnt = GetWorld()->SpawnActor<AFoodAnt>(Food->FoodClass, Ant->GetActorLocation(), Ant->GetActorRotation(), SpawnParams);
+	AIController->GetBlackboardComponent()->SetValueAsObject("FoodObject", FoodAnt);
+	
+	FoodAnt->AttachToComponent(Ant->FoodSocketComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+	AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", Ant->GetActorLocation());
+	//AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", Ant->GetActorLocation() + Ant->GetActorForwardVector() * - 100);
 	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	return EBTNodeResult::Succeeded;
@@ -34,5 +43,5 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 
 FString UBTTask_PickupFood::GetStaticDescription() const
 {
-	return FString::Printf(TEXT("Hello"));
+	return FString::Printf(TEXT("Task when ant picks up the food"));
 }

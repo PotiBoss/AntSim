@@ -27,6 +27,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = "C++")
 	TArray<AAnt*> AntArray;
 
+	UPROPERTY(EditAnywhere, Category = "C++")
+	TSubclassOf<AAnt> AntClass;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	uint16 AntsToSpawn = 10;
+
+	UPROPERTY(VisibleAnywhere, Category = "Stats")
+	int FoodAmount = 0;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

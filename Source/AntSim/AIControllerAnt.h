@@ -25,6 +25,9 @@ public:
 	AFood* Food;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class AColony* Colony;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FBlackboardKeySelector FoodLocation;
 
 protected:
