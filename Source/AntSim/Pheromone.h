@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Pheromone.generated.h"
+
 
 UENUM()
 enum EPheromone
@@ -36,6 +39,9 @@ public:
 	TArray<UParticleSystem*> Particles;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
+	TArray<UNiagaraSystem*> NiagaraParticles;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
 	float TimeToFadePheromone = 20.0f;
 
 	UFUNCTION()
@@ -48,7 +54,7 @@ public:
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 	UPROPERTY()
-	UParticleSystemComponent* Emitter;
+	UNiagaraComponent* Emitter;
 
 	FTimerHandle PheromoneDestroyHandle;
 	FTimerDelegate PheromoneDestroyDelegate;

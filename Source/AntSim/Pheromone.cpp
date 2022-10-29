@@ -7,7 +7,8 @@
 #include "Ant.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetArrayLibrary.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
@@ -48,8 +49,10 @@ void APheromone::SpawnPheromone(bool bHasFood)
 	{
 		PheromoneToSpawn = ToHome;
 	}
-
-	Emitter = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particles[PheromoneToSpawn], GetActorLocation());
+	Emitter = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraParticles[PheromoneToSpawn], GetActorLocation());
+	
+	//Emitter = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particles[PheromoneToSpawn], GetActorLocation());
+	
 
 	PheromoneDestroyDelegate.BindUFunction(this, "DestroyPheromone");
 	GetWorld()->GetTimerManager().SetTimer(PheromoneDestroyHandle, PheromoneDestroyDelegate, TimeToFadePheromone, false);
