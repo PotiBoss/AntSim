@@ -64,23 +64,33 @@ void APheromone::NotifyActorBeginOverlap(AActor* OtherActor)
 		if(!Ant->bHasFood && PheromoneToSpawn == ToFood)
 		{
 			AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
-			if(AIController)
+			if(AIController && LastPheromone == nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("New trail to home"));
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("null"));
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
 				FVector ForwardVector = GetActorLocation() + GetActorForwardVector() * 60;
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
+			}
+			else
+			{
+				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
+				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromone->GetActorLocation());
 			}
 		}
 		else if(Ant->bHasFood && PheromoneToSpawn == ToHome)
 		{
 			AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
-			if(AIController)
+			if(AIController && LastPheromone == nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("New trail to home"));
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("null"));
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
 				FVector ForwardVector = GetActorLocation() + GetActorForwardVector() * - 60;
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
+			}
+			else
+			{
+				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
+				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromone->GetActorLocation());
 			}
 		}
 		Ant->Pheromones.Add(this);

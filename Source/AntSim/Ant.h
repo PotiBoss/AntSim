@@ -24,7 +24,7 @@ public:
 	float NewTrailStrength = 0.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class AFood* Food;
+	class AFoodAnt* Food;
 
 	UPROPERTY(Category=Character, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	USceneComponent* FoodSocketComponent;
@@ -37,7 +37,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "C++")
 	TSubclassOf<APheromone> PheromoneClass;
-;
+
+	UPROPERTY()
+	APheromone* LastPheromone = nullptr;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<APheromone*> Pheromones;

@@ -4,8 +4,11 @@
 #include "BTTask_ReturnFoodToColony.h"
 
 #include "AIController.h"
+#include "AIControllerAnt.h"
 #include "Ant.h"
 #include "Colony.h"
+#include "Food.h"
+#include "FoodAnt.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_ReturnFoodToColony::UBTTask_ReturnFoodToColony()
@@ -15,16 +18,20 @@ UBTTask_ReturnFoodToColony::UBTTask_ReturnFoodToColony()
 
 EBTNodeResult::Type UBTTask_ReturnFoodToColony::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController = OwnerComp.GetAIOwner();
+	AAIControllerAnt* AIController = Cast<AAIControllerAnt>(OwnerComp.GetAIOwner());
 	AAnt* Ant = Cast<AAnt>(AIController->GetPawn());
 
-	AColony* Colony= Cast<AColony>(AIController->GetBlackboardComponent()->GetValueAsObject("Colony"));
+	AColony* Colony = Cast<AColony>(AIController->GetBlackboardComponent()->GetValueAsObject("Colony"));
 
 	if(Colony)
 	{
 		Colony->FoodAmount++;
 		Ant->bHasFood = false;
+		Ant->Food->Destroy();
 		Ant->Food = nullptr;
+
+		AIController->Colony = nullptr;
+		AIController->Food = nullptr;
 
 		AIController->GetBlackboardComponent()->ClearValue("NewLocation");
 		AIController->GetBlackboardComponent()->ClearValue("FoodLocation");
@@ -34,8 +41,6 @@ EBTNodeResult::Type UBTTask_ReturnFoodToColony::ExecuteTask(UBehaviorTreeCompone
 		AIController->GetBlackboardComponent()->ClearValue("PheromoneForwardVector");
 		AIController->GetBlackboardComponent()->ClearValue("ColonyLocation");
 		AIController->GetBlackboardComponent()->ClearValue("Colony");
-
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, TEXT("Cleared"));
 	}
 	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

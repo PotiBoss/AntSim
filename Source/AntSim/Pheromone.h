@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "C++")
 	USphereComponent* SphereComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "C++")
+	APheromone* LastPheromone;
+
 	EPheromone PheromoneToSpawn = ToHome;
 
 	UPROPERTY(EditAnywhere, Category = "C++")

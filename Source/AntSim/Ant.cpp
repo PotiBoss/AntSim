@@ -47,5 +47,10 @@ void AAnt::SpawnPheromone()
 {
 	APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClass, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
 	Pheromone->SpawnPheromone(bHasFood);
+	if(LastPheromone != nullptr)
+	{
+		Pheromone->LastPheromone = LastPheromone;
+	}
+	LastPheromone = Pheromone;
 }
 
