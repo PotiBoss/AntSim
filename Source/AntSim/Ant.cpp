@@ -3,6 +3,7 @@
 
 #include "Ant.h"
 
+#include "AIControllerAnt.h"
 #include "Pheromone.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -45,14 +46,15 @@ void AAnt::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AAnt::SpawnPheromone()
+void AAnt::SpawnPheromone(bool bLastInPath)
 {
 /*	if(bSkipNext)
 	{
 		bSkipNext = false;
 		return;
 	}
-*/	
+*/
+	
 	if(!bHasFood)
 	{
 		APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClassToHome, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
@@ -63,6 +65,11 @@ void AAnt::SpawnPheromone()
 			Pheromone->LastPheromoneLocation = LastPheromone->GetActorLocation();
 		}
 		LastPheromone = Pheromone;
+
+		if(bLastInPath)
+		{
+			Pheromone->bLastInPath = true;
+		}
 	}
 	else
 	{
@@ -74,7 +81,23 @@ void AAnt::SpawnPheromone()
 			Pheromone->LastPheromoneLocation = LastPheromone->GetActorLocation();
 		}
 		LastPheromone = Pheromone;
+		
+		if(bLastInPath)
+		{
+			Pheromone->bLastInPath = true;
+		}
 	}
+}
 
+void AAnt::SpawnPheromoneRepel()
+{
+	APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClassToRepel, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
+	Pheromone->SpawnPheromone(false, true);
+	if(LastPheromone != nullptr)
+	{
+		Pheromone->LastPheromone = LastPheromone;
+		Pheromone->LastPheromoneLocation = LastPheromone->GetActorLocation();
+	}
+	LastPheromone = Pheromone;
 }
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Food.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "NiagaraFunctionLibrary.h"
@@ -37,6 +38,9 @@ public:
 	FVector LastPheromoneLocation;
 
 	UPROPERTY(VisibleAnywhere, Category = "C++")
+	bool bLastInPath = false;
+	
+	UPROPERTY(VisibleAnywhere, Category = "C++")
 	TEnumAsByte<EPheromone> PheromoneToSpawn = ToHome;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
@@ -52,7 +56,7 @@ public:
 	void DestroyPheromone();
 
 	UFUNCTION()
-	void SpawnPheromone(bool bHasFood);
+	void SpawnPheromone(bool bHasFood = false, bool bShouldRepel = false);
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;

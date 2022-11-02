@@ -33,13 +33,19 @@ public:
 	UParticleSystem* Particle;
 
 	UFUNCTION()
-	void SpawnPheromone();
+	void SpawnPheromone(bool bLastInPath = false);
+
+	UFUNCTION()
+	void SpawnPheromoneRepel();
 	
 	UPROPERTY(EditAnywhere, Category = "C++")
 	TSubclassOf<APheromone> PheromoneClassToHome;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
 	TSubclassOf<APheromone> PheromoneClassToFood;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	TSubclassOf<APheromone> PheromoneClassToRepel;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
 	bool bSkipNext = false;

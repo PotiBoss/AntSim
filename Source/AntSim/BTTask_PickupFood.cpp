@@ -23,15 +23,18 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	AAnt* Ant = Cast<AAnt>(AIController->GetPawn());
 
-
+	
 
 	AFood* Food = Cast<AFood>(AIController->GetBlackboardComponent()->GetValueAsObject("FoodSource"));
 
 	if(!Food)
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-		return EBTNodeResult::Failed;
+		Ant->SpawnPheromoneRepel();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		return EBTNodeResult::Succeeded;
 	}
+
+	Ant->SpawnPheromone(true);
 	
 	Food->FoodAmount--;
 	
