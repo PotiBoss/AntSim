@@ -60,6 +60,7 @@ void AAnt::SpawnPheromone()
 		if(LastPheromone != nullptr)
 		{
 			Pheromone->LastPheromone = LastPheromone;
+			Pheromone->LastPheromoneLocation = LastPheromone->GetActorLocation();
 		}
 		LastPheromone = Pheromone;
 	}
@@ -70,6 +71,7 @@ void AAnt::SpawnPheromone()
 		if(LastPheromone != nullptr)
 		{
 			Pheromone->LastPheromone = LastPheromone;
+			Pheromone->LastPheromoneLocation = LastPheromone->GetActorLocation();
 		}
 		LastPheromone = Pheromone;
 	}

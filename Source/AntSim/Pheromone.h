@@ -34,6 +34,9 @@ public:
 	APheromone* LastPheromone;
 
 	UPROPERTY(VisibleAnywhere, Category = "C++")
+	FVector LastPheromoneLocation;
+
+	UPROPERTY(VisibleAnywhere, Category = "C++")
 	TEnumAsByte<EPheromone> PheromoneToSpawn = ToHome;
 
 	UPROPERTY(EditAnywhere, Category = "C++")

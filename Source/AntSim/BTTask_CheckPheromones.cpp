@@ -21,17 +21,14 @@ EBTNodeResult::Type UBTTask_CheckPheromones::ExecuteTask(UBehaviorTreeComponent&
 	{
 		if(Pheromone->PheromoneToSpawn == ToFood && !Ant->bHasFood)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("czek"));
 			if(AIController && Ant->LastPheromone == nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("null"));
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", Pheromone);
 				FVector ForwardVector = Pheromone->GetActorLocation() + Pheromone->GetActorForwardVector() * 60;
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
 			}
 			else
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("notnull"));
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", Pheromone);
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", Pheromone->LastPheromone->GetActorLocation());
 			}

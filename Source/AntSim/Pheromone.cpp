@@ -66,13 +66,14 @@ void APheromone::SpawnPheromone(bool bHasFood)
 void APheromone::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
+	
 	AAnt* Ant = Cast<AAnt>(OtherActor);
 	if(Ant)
 	{
 		if(!Ant->bHasFood && PheromoneToSpawn == ToFood)
 		{
 			AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
-			if(AIController && LastPheromone == nullptr)
+		/*	if(AIController && LastPheromone == nullptr)
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,FString::Printf(TEXT("Has Food: %s"), *GetName()));
 				UE_LOG(LogTemp, Error, TEXT("Has Food: %s"), *GetName());
@@ -80,16 +81,16 @@ void APheromone::NotifyActorBeginOverlap(AActor* OtherActor)
 				FVector ForwardVector = GetActorLocation() + GetActorForwardVector() * 60;
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
 			}
-			else
-			{
+			else*/
+		//	{
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
-				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromone->GetActorLocation());
-			}
+				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromoneLocation);
+		//	}
 		}
 		else if(Ant->bHasFood && PheromoneToSpawn == ToHome)
 		{
 			AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
-			if(AIController && LastPheromone == nullptr)
+		/*	if(AIController && LastPheromone == nullptr)
 			{
 				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,FString::Printf(TEXT("No Food: %s"), *GetName()));
 				UE_LOG(LogTemp, Error, TEXT("No Food: %s"), *GetName());
@@ -98,10 +99,10 @@ void APheromone::NotifyActorBeginOverlap(AActor* OtherActor)
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
 			}
 			else
-			{
+			{*/
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
-				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromone->GetActorLocation());
-			}
+				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromoneLocation);
+			//}
 		}
 		Ant->Pheromones.Add(this);
 	/*	
