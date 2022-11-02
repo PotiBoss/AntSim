@@ -35,7 +35,10 @@ void APheromone::Tick(float DeltaTime)
 
 void APheromone::DestroyPheromone()
 {
-	Emitter->DestroyComponent();
+	if(Emitter)
+	{
+		Emitter->DestroyComponent();
+	}
 	Destroy();
 }
 
@@ -44,12 +47,14 @@ void APheromone::SpawnPheromone(bool bHasFood)
 	if(bHasFood)
 	{
 		PheromoneToSpawn = ToFood;
+		SphereComponent->ShapeColor = FColor::Blue;
 	}
 	else
 	{
 		PheromoneToSpawn = ToHome;
+		SphereComponent->ShapeColor = FColor::Red;
 	}
-	Emitter = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraParticles[PheromoneToSpawn], GetActorLocation());
+	//Emitter = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraParticles[PheromoneToSpawn], GetActorLocation());
 	
 	//Emitter = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particles[PheromoneToSpawn], GetActorLocation());
 	
@@ -69,7 +74,8 @@ void APheromone::NotifyActorBeginOverlap(AActor* OtherActor)
 			AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
 			if(AIController && LastPheromone == nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("null"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,FString::Printf(TEXT("Has Food: %s"), *GetName()));
+				UE_LOG(LogTemp, Error, TEXT("Has Food: %s"), *GetName());
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
 				FVector ForwardVector = GetActorLocation() + GetActorForwardVector() * 60;
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
@@ -85,7 +91,8 @@ void APheromone::NotifyActorBeginOverlap(AActor* OtherActor)
 			AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
 			if(AIController && LastPheromone == nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("null"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,FString::Printf(TEXT("No Food: %s"), *GetName()));
+				UE_LOG(LogTemp, Error, TEXT("No Food: %s"), *GetName());
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
 				FVector ForwardVector = GetActorLocation() + GetActorForwardVector() * - 60;
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);

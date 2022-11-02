@@ -33,7 +33,8 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "C++")
 	APheromone* LastPheromone;
 
-	EPheromone PheromoneToSpawn = ToHome;
+	UPROPERTY(VisibleAnywhere, Category = "C++")
+	TEnumAsByte<EPheromone> PheromoneToSpawn = ToHome;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
 	TArray<UParticleSystem*> Particles;

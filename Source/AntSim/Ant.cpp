@@ -27,8 +27,10 @@ void AAnt::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PheromoneDelegate.BindUFunction(this, "SpawnPheromone", 1.0f, EPheromone::ToFood);
-	GetWorld()->GetTimerManager().SetTimer(PheromoneHandle, PheromoneDelegate, 1.0f, true);
+
+	SpawnPheromone();
+	PheromoneDelegate.BindUFunction(this, "SpawnPheromone", 2.0f);
+	GetWorld()->GetTimerManager().SetTimer(PheromoneHandle, PheromoneDelegate, 2.0f, true);
 }
 
 // Called every frame
@@ -45,12 +47,32 @@ void AAnt::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AAnt::SpawnPheromone()
 {
-	APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClass, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
-	Pheromone->SpawnPheromone(bHasFood);
-	if(LastPheromone != nullptr)
+/*	if(bSkipNext)
 	{
-		Pheromone->LastPheromone = LastPheromone;
+		bSkipNext = false;
+		return;
 	}
-	LastPheromone = Pheromone;
+*/	
+	if(!bHasFood)
+	{
+		APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClassToHome, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
+		Pheromone->SpawnPheromone(bHasFood);
+		if(LastPheromone != nullptr)
+		{
+			Pheromone->LastPheromone = LastPheromone;
+		}
+		LastPheromone = Pheromone;
+	}
+	else
+	{
+		APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClassToFood, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
+		Pheromone->SpawnPheromone(bHasFood);
+		if(LastPheromone != nullptr)
+		{
+			Pheromone->LastPheromone = LastPheromone;
+		}
+		LastPheromone = Pheromone;
+	}
+
 }
 

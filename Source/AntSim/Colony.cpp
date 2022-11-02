@@ -35,7 +35,7 @@ void AColony::BeginPlay()
 		
 		FNavLocation NavLocation;
 		
-		NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 300.0f, NavLocation);
+		NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 180.0f, NavLocation);
 
 		float RandomRotationYaw = FMath::RandRange(0, 360);
 

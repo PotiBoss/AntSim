@@ -27,12 +27,10 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	AFood* Food = Cast<AFood>(AIController->GetBlackboardComponent()->GetValueAsObject("FoodSource"));
 
-
-
 	FActorSpawnParameters SpawnParams;
 	
 	AFoodAnt* FoodAnt = GetWorld()->SpawnActor<AFoodAnt>(Food->FoodClass, Ant->GetActorLocation(), Ant->GetActorRotation(), SpawnParams);
-	AIController->GetBlackboardComponent()->SetValueAsObject("FoodObject", FoodAnt);\
+	AIController->GetBlackboardComponent()->SetValueAsObject("FoodObject", FoodAnt);
 	Ant->Food = FoodAnt;
 	
 	FoodAnt->AttachToComponent(Ant->FoodSocketComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
@@ -41,6 +39,7 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 	AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", Ant->LastPheromone->GetActorLocation());
 	//AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", Ant->GetActorLocation() + Ant->GetActorForwardVector() * - 100);
 	Ant->LastPheromone = nullptr;
+	Ant->bSkipNext = true;
 	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	return EBTNodeResult::Succeeded;
