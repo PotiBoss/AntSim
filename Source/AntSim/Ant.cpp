@@ -3,6 +3,7 @@
 
 #include "Ant.h"
 
+#include "AIControllerAnt.h"
 #include "Pheromone.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -27,8 +28,10 @@ void AAnt::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PheromoneDelegate.BindUFunction(this, "SpawnPheromone", 1.0f, EPheromone::ToFood);
-	GetWorld()->GetTimerManager().SetTimer(PheromoneHandle, PheromoneDelegate, 1.0f, true);
+
+	SpawnPheromone();
+	PheromoneDelegate.BindUFunction(this, "SpawnPheromone", 2.0f);
+	GetWorld()->GetTimerManager().SetTimer(PheromoneHandle, PheromoneDelegate, 2.0f, true);
 }
 
 // Called every frame
@@ -43,13 +46,57 @@ void AAnt::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AAnt::SpawnPheromone()
+void AAnt::SpawnPheromone(bool bLastInPath)
 {
-	APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClass, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
-	Pheromone->SpawnPheromone(bHasFood);
+/*	if(bSkipNext)
+	{
+		bSkipNext = false;
+		return;
+	}
+*/
+	
+	if(!bHasFood)
+	{
+		APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClassToHome, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
+		Pheromone->SpawnPheromone(bHasFood);
+		if(LastPheromone != nullptr)
+		{
+			Pheromone->LastPheromone = LastPheromone;
+			Pheromone->LastPheromoneLocation = LastPheromone->GetActorLocation();
+		}
+		LastPheromone = Pheromone;
+
+		if(bLastInPath)
+		{
+			Pheromone->bLastInPath = true;
+		}
+	}
+	else
+	{
+		APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClassToFood, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
+		Pheromone->SpawnPheromone(bHasFood);
+		if(LastPheromone != nullptr)
+		{
+			Pheromone->LastPheromone = LastPheromone;
+			Pheromone->LastPheromoneLocation = LastPheromone->GetActorLocation();
+		}
+		LastPheromone = Pheromone;
+		
+		if(bLastInPath)
+		{
+			Pheromone->bLastInPath = true;
+		}
+	}
+}
+
+void AAnt::SpawnPheromoneRepel()
+{
+	APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClassToRepel, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
+	Pheromone->SpawnPheromone(false, true);
 	if(LastPheromone != nullptr)
 	{
 		Pheromone->LastPheromone = LastPheromone;
+		Pheromone->LastPheromoneLocation = LastPheromone->GetActorLocation();
 	}
 	LastPheromone = Pheromone;
 }

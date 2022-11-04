@@ -33,10 +33,22 @@ public:
 	UParticleSystem* Particle;
 
 	UFUNCTION()
-	void SpawnPheromone();
+	void SpawnPheromone(bool bLastInPath = false);
+
+	UFUNCTION()
+	void SpawnPheromoneRepel();
 	
 	UPROPERTY(EditAnywhere, Category = "C++")
-	TSubclassOf<APheromone> PheromoneClass;
+	TSubclassOf<APheromone> PheromoneClassToHome;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	TSubclassOf<APheromone> PheromoneClassToFood;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	TSubclassOf<APheromone> PheromoneClassToRepel;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	bool bSkipNext = false;
 
 	UPROPERTY()
 	APheromone* LastPheromone = nullptr;
@@ -47,7 +59,7 @@ public:
 	FTimerHandle PheromoneHandle;
 	FTimerDelegate PheromoneDelegate;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "C++")
 	bool bHasFood = false;
 
 protected:

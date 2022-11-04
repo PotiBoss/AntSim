@@ -23,16 +23,27 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	AAnt* Ant = Cast<AAnt>(AIController->GetPawn());
 
-	Ant->bHasFood = true;
+	
 
 	AFood* Food = Cast<AFood>(AIController->GetBlackboardComponent()->GetValueAsObject("FoodSource"));
 
+	if(!Food)
+	{
+		Ant->SpawnPheromoneRepel();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		return EBTNodeResult::Succeeded;
+	}
 
-
+	Ant->SpawnPheromone(true);
+	
+	Food->FoodAmount--;
+	
 	FActorSpawnParameters SpawnParams;
+
+	Ant->bHasFood = true;
 	
 	AFoodAnt* FoodAnt = GetWorld()->SpawnActor<AFoodAnt>(Food->FoodClass, Ant->GetActorLocation(), Ant->GetActorRotation(), SpawnParams);
-	AIController->GetBlackboardComponent()->SetValueAsObject("FoodObject", FoodAnt);\
+	AIController->GetBlackboardComponent()->SetValueAsObject("FoodObject", FoodAnt);
 	Ant->Food = FoodAnt;
 	
 	FoodAnt->AttachToComponent(Ant->FoodSocketComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
@@ -41,6 +52,12 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 	AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", Ant->LastPheromone->GetActorLocation());
 	//AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", Ant->GetActorLocation() + Ant->GetActorForwardVector() * - 100);
 	Ant->LastPheromone = nullptr;
+	Ant->bSkipNext = true;
+
+	if(Food->FoodAmount <= 0)
+	{
+		Food->Destroy();
+	}
 	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	return EBTNodeResult::Succeeded;

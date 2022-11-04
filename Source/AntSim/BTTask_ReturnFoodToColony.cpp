@@ -23,6 +23,8 @@ EBTNodeResult::Type UBTTask_ReturnFoodToColony::ExecuteTask(UBehaviorTreeCompone
 
 	AColony* Colony = Cast<AColony>(AIController->GetBlackboardComponent()->GetValueAsObject("Colony"));
 
+	Ant->SpawnPheromone();
+
 	if(Colony)
 	{
 		Colony->FoodAmount++;

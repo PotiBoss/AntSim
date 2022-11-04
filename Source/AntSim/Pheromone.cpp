@@ -5,11 +5,12 @@
 
 #include "AIControllerAnt.h"
 #include "Ant.h"
+#include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Tasks/AITask.h"
 
 // Sets default values
 APheromone::APheromone()
@@ -35,21 +36,31 @@ void APheromone::Tick(float DeltaTime)
 
 void APheromone::DestroyPheromone()
 {
-	Emitter->DestroyComponent();
+	if(Emitter)
+	{
+		Emitter->DestroyComponent();
+	}
 	Destroy();
 }
 
-void APheromone::SpawnPheromone(bool bHasFood)
+void APheromone::SpawnPheromone(bool bHasFood, bool bShouldRepel)
 {
 	if(bHasFood)
 	{
 		PheromoneToSpawn = ToFood;
+		SphereComponent->ShapeColor = FColor::Blue;
+	}
+	else if(bShouldRepel)
+	{
+		PheromoneToSpawn = NoFood;
+		SphereComponent->ShapeColor = FColor::Green;
 	}
 	else
 	{
 		PheromoneToSpawn = ToHome;
+		SphereComponent->ShapeColor = FColor::Red;
 	}
-	Emitter = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraParticles[PheromoneToSpawn], GetActorLocation());
+	//Emitter = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraParticles[PheromoneToSpawn], GetActorLocation());
 	
 	//Emitter = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particles[PheromoneToSpawn], GetActorLocation());
 	
@@ -64,37 +75,50 @@ void APheromone::NotifyActorBeginOverlap(AActor* OtherActor)
 	AAnt* Ant = Cast<AAnt>(OtherActor);
 	if(Ant)
 	{
+		AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
 		if(!Ant->bHasFood && PheromoneToSpawn == ToFood)
 		{
-			AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
-			if(AIController && LastPheromone == nullptr)
+		/*	if(AIController && LastPheromone == nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("null"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,FString::Printf(TEXT("Has Food: %s"), *GetName()));
+				UE_LOG(LogTemp, Error, TEXT("Has Food: %s"), *GetName());
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
 				FVector ForwardVector = GetActorLocation() + GetActorForwardVector() * 60;
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
 			}
-			else
-			{
+			else*/
+		//	{
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
-				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromone->GetActorLocation());
-			}
+				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromoneLocation);
+		//	}
 		}
 		else if(Ant->bHasFood && PheromoneToSpawn == ToHome)
 		{
-			AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
-			if(AIController && LastPheromone == nullptr)
+			
+		/*	if(AIController && LastPheromone == nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,TEXT("null"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange,FString::Printf(TEXT("No Food: %s"), *GetName()));
+				UE_LOG(LogTemp, Error, TEXT("No Food: %s"), *GetName());
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
 				FVector ForwardVector = GetActorLocation() + GetActorForwardVector() * - 60;
 				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
 			}
 			else
-			{
+			{*/
 				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", this);
-				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromone->GetActorLocation());
-			}
+				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", LastPheromoneLocation);
+			//}
+		}
+		if(!Ant->bHasFood && PheromoneToSpawn == NoFood)
+		{
+			AIController->GetBlackboardComponent()->ClearValue("NewLocation");
+			AIController->GetBlackboardComponent()->ClearValue("FoodLocation");
+			AIController->GetBlackboardComponent()->ClearValue("FoodObject");
+			AIController->GetBlackboardComponent()->ClearValue("FoodSource");
+			AIController->GetBlackboardComponent()->ClearValue("Pheromone");
+			AIController->GetBlackboardComponent()->ClearValue("PheromoneForwardVector");
+
+			AIController->GetBlackboardComponent()->SetValueAsVector("RepelNewLocation", FVector::Zero());
 		}
 		Ant->Pheromones.Add(this);
 	/*	
@@ -119,7 +143,6 @@ void APheromone::NotifyActorBeginOverlap(AActor* OtherActor)
 			AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
 		}
 		*/
-
 	}
 }
 
@@ -127,10 +150,43 @@ void APheromone::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
 	AAnt* Ant = Cast<AAnt>(OtherActor);
+
 	if(Ant)
 	{
 		Ant->Pheromones.Remove(this);
+		
+		AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
+		if(bLastInPath)
+		{
+
+			TArray<FHitResult> TraceArray;
+			TArray<AActor*> ActorsToIgnore;
+
+			const bool Hit = UKismetSystemLibrary::SphereTraceMulti(GetWorld(), Ant->GetActorLocation(), Ant->GetActorLocation(), 250.0f,
+				UEngineTypes::ConvertToTraceType(ECC_Vehicle), false, ActorsToIgnore, EDrawDebugTrace::None,
+				TraceArray,true, FLinearColor::Green,FLinearColor::Blue, 10.0f);
+
+			if(Hit)
+			{
+				for (auto HitResult : TraceArray)
+				{
+					if(Cast<AFood>(HitResult.GetActor()))
+					{
+						//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Orange, FString::Printf(TEXT("%s"), *HitResult.GetActor()->GetName()));
+						return;
+					}
+				}
+				Ant->SpawnPheromoneRepel();
+			}
+			/*
+			if(!AIController->GetBlackboardComponent()->GetValueAsObject("FoodSource"))
+			{
+				Ant->SpawnPheromoneRepel();
+			}*/
+		}
 	}
+
+
 }
 
 
