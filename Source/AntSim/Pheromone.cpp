@@ -5,10 +5,12 @@
 
 #include "AIControllerAnt.h"
 #include "Ant.h"
+#include "Colony.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
+#include "PC.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Tasks/AITask.h"
 
@@ -36,6 +38,7 @@ void APheromone::Tick(float DeltaTime)
 
 void APheromone::DestroyPheromone()
 {
+	Cast<APC>(GetWorld()->GetFirstPlayerController())->PheromoneArray.Remove(this);
 	if(Emitter)
 	{
 		Emitter->DestroyComponent();
@@ -63,8 +66,9 @@ void APheromone::SpawnPheromone(bool bHasFood, bool bShouldRepel)
 	//Emitter = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraParticles[PheromoneToSpawn], GetActorLocation());
 	
 	//Emitter = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Particles[PheromoneToSpawn], GetActorLocation());
-	
 
+	Cast<APC>(GetWorld()->GetFirstPlayerController())->PheromoneArray.Add(this);
+	
 	PheromoneDestroyDelegate.BindUFunction(this, "DestroyPheromone");
 	GetWorld()->GetTimerManager().SetTimer(PheromoneDestroyHandle, PheromoneDestroyDelegate, TimeToFadePheromone, false);
 }
@@ -155,7 +159,7 @@ void APheromone::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		Ant->Pheromones.Remove(this);
 		
-		AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
+		//AAIControllerAnt* AIController = Cast<AAIControllerAnt>(Ant->GetController());
 		if(bLastInPath)
 		{
 

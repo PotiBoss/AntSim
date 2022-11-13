@@ -6,6 +6,7 @@
 #include "AIControllerAnt.h"
 #include "Ant.h"
 #include "NavigationSystem.h"
+#include "PC.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -21,6 +22,7 @@ AColony::AColony()
 
 	TriggerBox->SetupAttachment(Mesh);
 }
+
 
 // Called when the game starts or when spawned
 void AColony::BeginPlay()

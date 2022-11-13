@@ -50,6 +50,9 @@ public:
 	TArray<UNiagaraSystem*> NiagaraParticles;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
+	class AColony* Colony;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
 	float TimeToFadePheromone = 20.0f;
 
 	UFUNCTION()
