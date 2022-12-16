@@ -23,12 +23,8 @@ AColony::AColony()
 	TriggerBox->SetupAttachment(Mesh);
 }
 
-
-// Called when the game starts or when spawned
-void AColony::BeginPlay()
+void AColony::StartSimulation()
 {
-	Super::BeginPlay();
-
 	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
 
 	for(uint16 i = 0; i < AntsToSpawn; i++)
@@ -47,10 +43,18 @@ void AColony::BeginPlay()
 	}
 }
 
+
+// Called when the game starts or when spawned
+void AColony::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//StartSimulation();
+}
+
 // Called every frame
 void AColony::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 

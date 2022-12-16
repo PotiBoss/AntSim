@@ -14,16 +14,25 @@ class ANTSIM_API APC : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class AColony* Colony;
+
+	virtual void BeginPlay() override;
 		
 	UFUNCTION(BlueprintCallable)
 	void SwitchPheromoneVisibilty();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AColony* Colony;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
 	TArray<class APheromone*> PheromoneArray;
 
 	UPROPERTY()
 	bool bArePheromonesVisible = false;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	TSubclassOf<class UHUDWidget> HUDClass;
+
+	UPROPERTY()
+	UHUDWidget* HUDWidget;
 
 };

@@ -18,6 +18,9 @@ public:
 	// Sets default values for this actor's properties
 	AColony();
 
+	UFUNCTION()
+	void StartSimulation();
+
 	UPROPERTY(EditAnywhere, Category = "C++")
 	UStaticMeshComponent* Mesh;
 

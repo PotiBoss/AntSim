@@ -4,8 +4,28 @@
 #include "PC.h"
 
 #include "Colony.h"
+#include "HUDWidget.h"
 #include "Pheromone.h"
+#include "Kismet/GameplayStatics.h"
 
+
+void APC::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Colony = Cast<AColony>(UGameplayStatics::GetActorOfClass(GetWorld(), AColony::StaticClass()));
+
+	if(HUDClass)
+	{
+		HUDWidget = Cast<UHUDWidget>(CreateWidget(this, HUDClass));
+	}
+	if(HUDWidget)
+	{
+		HUDWidget->AddToViewport();
+		HUDWidget->PC = this;
+		bShowMouseCursor = true;
+	}
+}
 
 void APC::SwitchPheromoneVisibilty()
 {

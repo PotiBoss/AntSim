@@ -28,7 +28,10 @@ public:
 	TSubclassOf<class AFoodAnt> FoodClass;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
-	UTextRenderComponent* TextRender;
+	UTextRenderComponent* TextRenderFoodAmount;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	UTextRenderComponent* TextRenderPheromoneAmount;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
 	uint8 FoodAmount;

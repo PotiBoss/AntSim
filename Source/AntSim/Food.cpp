@@ -17,9 +17,11 @@ AFood::AFood()
 
 	SetRootComponent(Mesh);
 
-	TextRender = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderer"));
+	TextRenderFoodAmount = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRendererFood"));
+	TextRenderFoodAmount->SetupAttachment(Mesh);
 
-	TextRender->SetupAttachment(Mesh);
+	TextRenderPheromoneAmount = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRendererPheromone"));
+	TextRenderPheromoneAmount->SetupAttachment(Mesh);
 
 	FoodAmount = 11;
 }
