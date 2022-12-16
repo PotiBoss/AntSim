@@ -4,7 +4,9 @@
 #include "Ant.h"
 
 #include "AIControllerAnt.h"
+#include "PC.h"
 #include "Pheromone.h"
+#include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -59,6 +61,7 @@ void AAnt::SpawnPheromone(bool bLastInPath)
 	{
 		APheromone* Pheromone = GetWorld()->SpawnActor<APheromone>(PheromoneClassToHome, GetActorLocation() + GetActorForwardVector() * - 75, GetActorRotation());
 		Pheromone->SpawnPheromone(bHasFood);
+		
 		if(LastPheromone != nullptr)
 		{
 			Pheromone->LastPheromone = LastPheromone;
@@ -69,6 +72,19 @@ void AAnt::SpawnPheromone(bool bLastInPath)
 		if(bLastInPath)
 		{
 			Pheromone->bLastInPath = true;
+			AAIControllerAnt* AntController = Cast<AAIControllerAnt>(GetController());
+			AntController->Food->PheromoneAmount++;
+
+			Pheromone->FoodForLastInPath = AntController->Food;
+
+			APC* PC = Cast<APC>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+			if(PC->FoodWidget)
+			{
+				if(AntController->Food == PC->FoodWidget->Food)
+				{
+					PC->FoodWidget->PheromonesText->SetText(FText::AsNumber(AntController->Food->PheromoneAmount));
+				}
+			}
 		}
 	}
 	else

@@ -35,4 +35,6 @@ public:
 	UPROPERTY()
 	UHUDWidget* HUDWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UFoodWidget* FoodWidget;
 };

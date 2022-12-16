@@ -7,7 +7,10 @@
 #include "Ant.h"
 #include "Food.h"
 #include "FoodAnt.h"
+#include "PC.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 UBTTask_PickupFood::UBTTask_PickupFood()
 {
@@ -34,9 +37,23 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Succeeded;
 	}
 
+	
+
 	Ant->SpawnPheromone(true);
 	
 	Food->FoodAmount--;
+	APC* PC = Cast<APC>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+
+	if(PC->FoodWidget)
+	{
+		if(PC->FoodWidget->Food == Food)
+		{
+			PC->FoodWidget->FoodText->SetText(FText::AsNumber(Food->FoodAmount));
+		}
+	}
+
+
+	Food->TextRenderFoodAmount->SetText(FText::AsNumber(Food->FoodAmount));
 	
 	FActorSpawnParameters SpawnParams;
 
@@ -56,6 +73,14 @@ EBTNodeResult::Type UBTTask_PickupFood::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	if(Food->FoodAmount <= 0)
 	{
+		if(PC->FoodWidget)
+		{
+			if(PC->FoodWidget->Food == Food)
+			{
+				PC->FoodWidget->PheromonesText->SetText(FText::AsNumber(-1));
+			}
+		}
+		
 		Food->Destroy();
 	}
 	

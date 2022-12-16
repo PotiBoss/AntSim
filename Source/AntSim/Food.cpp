@@ -30,7 +30,6 @@ AFood::AFood()
 void AFood::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

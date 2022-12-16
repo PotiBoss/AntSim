@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FoodWidget.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Actor.h"
 #include "Food.generated.h"
@@ -35,7 +36,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "C++")
 	uint8 FoodAmount;
+	
+	UPROPERTY(EditAnywhere, Category = "C++")
+	uint8 PheromoneAmount;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "C++")
+	FText Name;
 
 protected:
 	// Called when the game starts or when spawned

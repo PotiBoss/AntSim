@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
 #include "PC.h"
+#include "Components/TextBlock.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Tasks/AITask.h"
 
@@ -38,11 +39,19 @@ void APheromone::Tick(float DeltaTime)
 
 void APheromone::DestroyPheromone()
 {
-	Cast<APC>(GetWorld()->GetFirstPlayerController())->PheromoneArray.Remove(this);
+	APC* PC = Cast<APC>(GetWorld()->GetFirstPlayerController());
+	PC->PheromoneArray.Remove(this);
 	if(Emitter)
 	{
 		Emitter->DestroyComponent();
 	}
+
+	if(bLastInPath && FoodForLastInPath)
+	{
+		FoodForLastInPath->PheromoneAmount--;
+		PC->FoodWidget->PheromonesText->SetText(FText::AsNumber(FoodForLastInPath->PheromoneAmount));
+	}
+	
 	Destroy();
 }
 
