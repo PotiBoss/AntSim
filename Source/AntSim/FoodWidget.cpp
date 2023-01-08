@@ -21,7 +21,5 @@ void UFoodWidget::Init()
 void UFoodWidget::CloseButtonClicked()
 {
 	APC* PC = Cast<APC>(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	PC->FoodWidget = nullptr;
-	RemoveFromViewport();
-	Destruct();
+	PC->FoodWidget->SetVisibility(ESlateVisibility::Collapsed);
 }

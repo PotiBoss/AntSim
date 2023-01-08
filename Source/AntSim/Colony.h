@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Food.h"
 #include "GameFramework/Actor.h"
 #include "Colony.generated.h"
 
@@ -32,6 +33,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "C++")
 	TSubclassOf<AAnt> AntClass;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	TArray<AActor*> FoodSourceArray;
 
 	UPROPERTY(EditAnywhere, Category = "C++")
 	uint16 AntsToSpawn = 10;

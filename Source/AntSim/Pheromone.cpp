@@ -45,10 +45,14 @@ void APheromone::DestroyPheromone()
 	{
 		Emitter->DestroyComponent();
 	}
-
+	
 	if(bLastInPath && FoodForLastInPath)
 	{
 		FoodForLastInPath->PheromoneAmount--;
+	}
+
+	if(bLastInPath && FoodForLastInPath && PC->FoodWidget && FoodForLastInPath == PC->FoodWidget->Food)
+	{
 		PC->FoodWidget->PheromonesText->SetText(FText::AsNumber(FoodForLastInPath->PheromoneAmount));
 	}
 	

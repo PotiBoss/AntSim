@@ -17,7 +17,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void Init();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void CloseButtonClicked();
 	

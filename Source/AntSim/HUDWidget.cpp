@@ -5,6 +5,7 @@
 
 #include "Colony.h"
 #include "PC.h"
+#include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 
 void UHUDWidget::PressedStartSimulation()
@@ -12,9 +13,11 @@ void UHUDWidget::PressedStartSimulation()
 	if(PC && !bSimulationStarted)
 	{
 		bSimulationStarted = true;
-		if(PC->Colony)
+		if(PC->Colony && ColonyWidgetClass)
 		{
-			PC->Colony->StartSimulation();	
+			PC->Colony->StartSimulation();
+			ColonyWidget = Cast<UColonyWidget>(CreateWidget(this, ColonyWidgetClass));
+			ColonyWidget->AddToViewport();
 		}
 	}
 }
@@ -37,5 +40,46 @@ void UHUDWidget::PressedBox()
 void UHUDWidget::PressedLabyrinth()
 {
 	UGameplayStatics::OpenLevel(this, FName("Labirynth"), false);
+}
+
+void UHUDWidget::SpeedUp()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), UGameplayStatics::GetGlobalTimeDilation(GetWorld()) * 2);
+}
+
+void UHUDWidget::SpeedDown()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), UGameplayStatics::GetGlobalTimeDilation(GetWorld()) / 2);
+}
+
+void UHUDWidget::CheckBestSource()
+{
+	if(PC->Colony)
+	{
+		for (auto Actor : PC->Colony->FoodSourceArray)
+		{
+			AFood* FoodSource = Cast<AFood>(Actor);
+
+			if(FoodSource)
+			{
+				if(FoodSource->PheromoneAmount > ColonyWidget->FoodSourceAmount)
+				{
+					ColonyWidget->FoodSourceAmount = FoodSource->PheromoneAmount;
+				//	ColonyWidget->PheromoneAmount->SetText(FText::AsNumber(FoodSource->PheromoneAmount));
+					ColonyWidget->FoodSourceName->SetText(FText::FromString(*FoodSource->GetName()));
+					ColonyWidget->CurrentBestFoodSource = FoodSource;
+				}
+			}
+		}
+		
+		if(ColonyWidget->CurrentBestFoodSource)
+		{
+			//GEngine->AddOnScreenDebugMessage(-1 ,3.0f, FColor::Orange, FString::Printf(TEXT("%d"),ColonyWidget->CurrentBestFoodSource->PheromoneAmount));
+			ColonyWidget->PheromoneAmount->SetText(FText::AsNumber(ColonyWidget->CurrentBestFoodSource->PheromoneAmount));
+		}
+	}
+
+
+	
 }
 

@@ -9,6 +9,7 @@
 #include "PC.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AColony::AColony()
@@ -40,6 +41,8 @@ void AColony::StartSimulation()
 		FRotator SpawnRotation = FRotator(0.0f, RandomRotationYaw,0.0f);
 		
 		AntArray.Add(GetWorld()->SpawnActor<AAnt>(AntClass, NavLocation.Location, SpawnRotation, SpawnParams));
+
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFood::StaticClass(), FoodSourceArray);
 	}
 }
 

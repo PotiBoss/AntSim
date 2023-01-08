@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ColonyWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "HUDWidget.generated.h"
 
@@ -29,8 +30,23 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PressedLabyrinth();
 
+	UFUNCTION(BlueprintCallable)
+	void SpeedUp();
+
+	UFUNCTION(BlueprintCallable)
+	void SpeedDown();
+
+	UFUNCTION(BlueprintCallable)
+	void CheckBestSource();
+
 	UPROPERTY(EditAnywhere)
 	class APC* PC;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class TSubclassOf<UColonyWidget> ColonyWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UColonyWidget* ColonyWidget;
 
 	UPROPERTY()
 	bool bSimulationStarted = false;
@@ -49,6 +65,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UButton* LabyrinthMap;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UButton* SpeedUpButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UButton* SpeedDownButton;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* StartSimulationText;
@@ -64,4 +86,6 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* LabyrinthText;
+
+	
 };
