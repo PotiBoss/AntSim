@@ -18,6 +18,8 @@ void UHUDWidget::PressedStartSimulation()
 			PC->Colony->StartSimulation();
 			ColonyWidget = Cast<UColonyWidget>(CreateWidget(this, ColonyWidgetClass));
 			ColonyWidget->AddToViewport();
+
+			ColonyWidget->CurrentBestFoodSource = Cast<AFood>(PC->Colony->FoodSourceArray[0]);
 		}
 	}
 }
@@ -64,10 +66,11 @@ void UHUDWidget::CheckBestSource()
 			{
 				if(FoodSource->PheromoneAmount > ColonyWidget->FoodSourceAmount)
 				{
+					ColonyWidget->CurrentBestFoodSource->Mesh->SetMaterial(0, ColonyWidget->CurrentBestFoodSource->MaterialBase);
 					ColonyWidget->FoodSourceAmount = FoodSource->PheromoneAmount;
-				//	ColonyWidget->PheromoneAmount->SetText(FText::AsNumber(FoodSource->PheromoneAmount));
 					ColonyWidget->FoodSourceName->SetText(FText::FromString(*FoodSource->GetName()));
 					ColonyWidget->CurrentBestFoodSource = FoodSource;
+					ColonyWidget->CurrentBestFoodSource->Mesh->SetMaterial(0, ColonyWidget->CurrentBestFoodSource->MaterialBest);
 				}
 			}
 		}

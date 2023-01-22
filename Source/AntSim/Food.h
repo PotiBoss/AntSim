@@ -22,6 +22,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "C++")
 	UStaticMeshComponent* Mesh;
 
+	UPROPERTY(EditAnywhere, Category = "C++")
+	UMaterial* MaterialBase;
+
+	UPROPERTY(EditAnywhere, Category = "C++")
+	UMaterial* MaterialBest;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "C++")
 	UAIPerceptionStimuliSourceComponent* StimuliSourceComponent;
 

@@ -37,8 +37,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "C++")
 	TArray<AActor*> FoodSourceArray;
 
-	UPROPERTY(EditAnywhere, Category = "C++")
-	uint16 AntsToSpawn = 10;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "C++")
+	int AntsToSpawn = 20;
 
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	int FoodAmount = 0;

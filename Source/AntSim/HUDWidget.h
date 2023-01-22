@@ -87,5 +87,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* LabyrinthText;
 
-	
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* AntsAmountText;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UEditableTextBox* AntsAmountInput;
 };

@@ -23,7 +23,7 @@ EBTNodeResult::Type UBTTask_CheckPheromones::ExecuteTask(UBehaviorTreeComponent&
 
 	const bool Hit = UKismetSystemLibrary::SphereTraceMulti(GetWorld(), Ant->GetActorLocation(), Ant->GetActorLocation(), 200.0f,
 		UEngineTypes::ConvertToTraceType(ECC_Visibility), false, ActorsToIgnore, EDrawDebugTrace::None,
-		TraceArray,true, FLinearColor::Green,FLinearColor::Blue, 10.0f);
+		TraceArray,true, FLinearColor::Green,FLinearColor::Blue, 1.0f);
 
 	if(Hit)
 	{
@@ -52,27 +52,6 @@ EBTNodeResult::Type UBTTask_CheckPheromones::ExecuteTask(UBehaviorTreeComponent&
 		}
 	}
 
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	return EBTNodeResult::Succeeded;
-	for (auto Pheromone : Ant->Pheromones)
-	{
-		if(Pheromone->PheromoneToSpawn == ToFood && !Ant->bHasFood)
-		{
-			if(AIController && Ant->LastPheromone == nullptr)
-			{
-				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", Pheromone);
-				FVector ForwardVector = Pheromone->GetActorLocation() + Pheromone->GetActorForwardVector() * 60;
-				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", ForwardVector);
-			}
-			else
-			{
-				AIController->GetBlackboardComponent()->SetValueAsObject("Pheromone", Pheromone);
-				AIController->GetBlackboardComponent()->SetValueAsVector("PheromoneForwardVector", Pheromone->LastPheromone->GetActorLocation());
-			}
-			break;
-		}
-	}
-	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	return EBTNodeResult::Succeeded;
 }

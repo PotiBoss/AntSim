@@ -3,10 +3,8 @@
 
 #include "Colony.h"
 
-#include "AIControllerAnt.h"
 #include "Ant.h"
 #include "NavigationSystem.h"
-#include "PC.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
