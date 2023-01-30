@@ -64,7 +64,7 @@ void APheromone::SpawnPheromone(bool bHasFood, bool bShouldRepel)
 	if(bHasFood)
 	{
 		PheromoneToSpawn = ToFood;
-		SphereComponent->ShapeColor = FColor::Blue;
+		SphereComponent->ShapeColor = FColor::Yellow;
 	}
 	else if(bShouldRepel)
 	{
@@ -74,7 +74,7 @@ void APheromone::SpawnPheromone(bool bHasFood, bool bShouldRepel)
 	else
 	{
 		PheromoneToSpawn = ToHome;
-		SphereComponent->ShapeColor = FColor::Red;
+		SphereComponent->ShapeColor = FColor::Magenta;
 	}
 	//Emitter = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraParticles[PheromoneToSpawn], GetActorLocation());
 	
